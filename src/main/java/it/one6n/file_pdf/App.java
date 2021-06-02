@@ -1,16 +1,14 @@
 package it.one6n.file_pdf;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-
-import org.apache.pdfbox.multipdf.Splitter;
 //import org.apache.log4j.BasicConfigurator;
 //import org.apache.log4j.PropertyConfigurator;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 
 public class App 
@@ -33,7 +31,7 @@ public class App
     	
     	String loadPath = "MyPdf.pdf";
     	PDDocument loadedDocument = PdfUtils.loadPDF(loadPath);
-    	if( loadedDocument != null) {
+    	if(loadedDocument != null) {
 	    	int pageIndex = 0;
 	    	int tx = 200;
 			int ty = 450;
@@ -43,34 +41,16 @@ public class App
 	    	PdfUtils.savePDF(loadedDocument, loadPath);
 	    	
 	    	Integer delimiter = 2;
-	    	Splitter splitter = new Splitter();
 	    	String folderPath = "";
-	    	try {
-				List<PDDocument> pages = splitter.split(loadedDocument);
-				Iterator<PDDocument> pagesIterator = pages.iterator();
-				PDDocument [] splittedDocuments = new PDDocument [] {new PDDocument(), new PDDocument()};
- 				int counter = 0;
-				while(pagesIterator.hasNext() && counter < delimiter) {
-					splittedDocuments[0].addPage(pagesIterator.next().getPage(0));
-					counter++;
-				}
-				while(pagesIterator.hasNext())
-					splittedDocuments[1].addPage(pagesIterator.next().getPage(0));
-				for(int i = 0; i < splittedDocuments.length; i++)
-					PdfUtils.savePDF(splittedDocuments[i], folderPath + "splitted_" + (i+ 1) + ".pdf");
-			} catch (IOException e) {
-				log.error("Error in splitting document={}", loadedDocument.toString());
-			}
 	    	
-			/*
-			 * int modifyPageIndex = 3; PDPage modifiedPage =
-			 * loadedDocument.getPage(modifyPageIndex);
-			 * PdfUtils.closeDocument(loadedDocument);
-			 */
-	    	
+	    	List<PDDocument> splittedDocuments = PdfUtils.splitDocument(loadedDocument, delimiter);
+	    	Iterator<PDDocument> splittedIterator = splittedDocuments.iterator();
+	    	int i = 0;
+	    	while(splittedIterator.hasNext()) {
+	    		PdfUtils.savePDF(splittedIterator.next(), folderPath + "splitted_" + (i+ 1) + ".pdf");
+	    		++i;
+	    	}
 	    	PdfUtils.closeDocument(loadedDocument);
     	}
     }
-
-
 }

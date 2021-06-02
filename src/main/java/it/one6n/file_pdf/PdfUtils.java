@@ -2,7 +2,11 @@ package it.one6n.file_pdf;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
+import org.apache.pdfbox.multipdf.Splitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -35,6 +39,17 @@ public class PdfUtils {
 			}
 		}
 	}
+
+    public static void savePDF(PDDocument document, String absolutePath) {
+    	if(document != null && absolutePath != null) {
+	    	try {
+	    		document.save(absolutePath);
+	    		log.info("Saved document={} in path={}", document, absolutePath);
+	    	}catch(IOException e) {
+	    		log.error("Error in save pdf={}",document.toString());
+	    	}
+    	}
+    }
     
     public static PDDocument loadPDF(String absolutePath) {
     	PDDocument loadedPDF = null;
@@ -49,17 +64,6 @@ public class PdfUtils {
     	}
     	return loadedPDF;
     }
-
-    public static void savePDF(PDDocument document, String absolutePath) {
-    	if(document != null && absolutePath != null) {
-	    	try {
-	    		document.save(absolutePath);
-	    		log.info("Saved document={} in path={}", document, absolutePath);
-	    	}catch(IOException e) {
-	    		log.error("Error in save pdf={}",document.toString());
-	    	}
-    	}
-    }
     
     public static PDDocument loadPDF(File file) {
     	PDDocument loadedPDF = null;
@@ -72,6 +76,44 @@ public class PdfUtils {
 	    }
     	return loadedPDF;
     }
+    
+	public static List<PDDocument> splitDocument(PDDocument document, Integer delimiter) {
+		List<PDDocument> splittedDocuments = null;
+		if(document != null && delimiter <= document.getNumberOfPages()) {
+			Splitter splitter = new Splitter();
+			try {
+				List<PDDocument> pages = splitter.split(document);
+				Iterator<PDDocument> pagesIterator = pages.iterator();
+				splittedDocuments = Arrays.asList(new PDDocument [] {new PDDocument(), new PDDocument()});
+				int counter = 0;
+				while(pagesIterator.hasNext() && counter < delimiter) {
+					splittedDocuments.get(0).addPage(pagesIterator.next().getPage(0));
+					counter++;
+				}
+				while(pagesIterator.hasNext())
+					splittedDocuments.get(1).addPage(pagesIterator.next().getPage(0));
+			} catch (IOException e) {
+				log.error("Error in splitting document={}", document.toString());
+			}
+		}
+		return splittedDocuments;
+	}
+    
+	public static void writeText(PDDocument document, int pageIndex, String text, PDType1Font font, int tx, int ty) {
+		PDPageContentStream pageContentStream = getPageContentStream(document, document.getPage(pageIndex));
+		if(pageContentStream != null && text != null) {
+			try {
+				pageContentStream.beginText();
+				pageContentStream.newLineAtOffset(tx, ty);
+				pageContentStream.setFont(font, 40);
+				pageContentStream.showText(text);
+				pageContentStream.endText();
+				closePageContentStream(pageContentStream);
+			} catch (IOException e) {
+				log.error("Error in writing in pdf");
+			}
+		}
+	}
     
 	private static PDPageContentStream getPageContentStream(PDDocument document, PDPage page) {
 		PDPageContentStream contentStream = null;
@@ -91,22 +133,6 @@ public class PdfUtils {
 				contentStream.close();
 			} catch (IOException e) {
 				log.error("Error in closing contentStrem");
-			}
-		}
-	}
-	
-	public static void writeText(PDDocument document, int pageIndex, String text, PDType1Font font, int tx, int ty) {
-		PDPageContentStream pageContentStream = getPageContentStream(document, document.getPage(pageIndex));
-		if(pageContentStream != null && text != null) {
-			try {
-				pageContentStream.beginText();
-				pageContentStream.newLineAtOffset(tx, ty);
-				pageContentStream.setFont(font, 40);
-				pageContentStream.showText(text);
-				pageContentStream.endText();
-				closePageContentStream(pageContentStream);
-			} catch (IOException e) {
-				log.error("Error in writing in pdf");
 			}
 		}
 	}
