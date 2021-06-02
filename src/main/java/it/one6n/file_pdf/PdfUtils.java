@@ -73,7 +73,7 @@ public class PdfUtils {
     	return loadedPDF;
     }
     
-	public static PDPageContentStream getPageContentStream(PDDocument document, PDPage page) {
+	private static PDPageContentStream getPageContentStream(PDDocument document, PDPage page) {
 		PDPageContentStream contentStream = null;
 		if(document != null && page != null) {
 			try {
@@ -85,7 +85,7 @@ public class PdfUtils {
 		return contentStream;
 	}
 	
-	public static void closePageContentStream(PDPageContentStream contentStream) {
+	private static void closePageContentStream(PDPageContentStream contentStream) {
 		if(contentStream != null) {
 			try {
 				contentStream.close();
@@ -94,7 +94,9 @@ public class PdfUtils {
 			}
 		}
 	}
-	public static void writeText(PDPageContentStream pageContentStream, String text, PDType1Font font, int tx, int ty) {
+	
+	public static void writeText(PDDocument document, int pageIndex, String text, PDType1Font font, int tx, int ty) {
+		PDPageContentStream pageContentStream = getPageContentStream(document, document.getPage(pageIndex));
 		if(pageContentStream != null && text != null) {
 			try {
 				pageContentStream.beginText();
@@ -102,6 +104,7 @@ public class PdfUtils {
 				pageContentStream.setFont(font, 40);
 				pageContentStream.showText(text);
 				pageContentStream.endText();
+				closePageContentStream(pageContentStream);
 			} catch (IOException e) {
 				log.error("Error in writing in pdf");
 			}

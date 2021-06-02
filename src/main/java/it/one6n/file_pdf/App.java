@@ -1,20 +1,13 @@
 package it.one6n.file_pdf;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.fontbox.util.BoundingBox;
 import org.apache.pdfbox.multipdf.Splitter;
 //import org.apache.log4j.BasicConfigurator;
 //import org.apache.log4j.PropertyConfigurator;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,17 +34,12 @@ public class App
     	String loadPath = "MyPdf.pdf";
     	PDDocument loadedDocument = PdfUtils.loadPDF(loadPath);
     	if( loadedDocument != null) {
-	    	int index = 0;
+	    	int pageIndex = 0;
 	    	int tx = 200;
 			int ty = 450;
 			String text = "Hello world";
-	    	PDPage page = loadedDocument.getPage(index);
-	    	PDPageContentStream firstPageContentStream = PdfUtils.getPageContentStream(loadedDocument, page);
-	    	PDPageContentStream thirdPageContentStream = PdfUtils.getPageContentStream(loadedDocument, loadedDocument.getPage(2));
-	    	PdfUtils.writeText(firstPageContentStream, text, PDType1Font.TIMES_BOLD_ITALIC,tx, ty);
-	    	PdfUtils.writeText(thirdPageContentStream, "Hello World 2", PDType1Font.TIMES_BOLD_ITALIC,tx, ty);
-	    	PdfUtils.closePageContentStream(firstPageContentStream);
-	    	PdfUtils.closePageContentStream(thirdPageContentStream);
+	    	PdfUtils.writeText(loadedDocument, pageIndex, text, PDType1Font.TIMES_BOLD_ITALIC,tx, ty);
+	    	PdfUtils.writeText(loadedDocument, 2, "Hello World 2", PDType1Font.TIMES_BOLD_ITALIC,tx, ty);
 	    	PdfUtils.savePDF(loadedDocument, loadPath);
 	    	
 	    	Integer delimiter = 2;
