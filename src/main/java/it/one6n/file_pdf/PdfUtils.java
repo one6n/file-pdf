@@ -54,6 +54,7 @@ public class PdfUtils {
     	if(document != null && absolutePath != null) {
 	    	try {
 	    		document.save(absolutePath);
+	    		log.info("Saved document={} in path={}", document, absolutePath);
 	    	}catch(IOException e) {
 	    		log.error("Error in save pdf={}",document.toString());
 	    	}

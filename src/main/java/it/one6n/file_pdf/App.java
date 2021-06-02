@@ -3,8 +3,12 @@ package it.one6n.file_pdf;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.fontbox.util.BoundingBox;
+import org.apache.pdfbox.multipdf.Splitter;
 //import org.apache.log4j.BasicConfigurator;
 //import org.apache.log4j.PropertyConfigurator;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -43,10 +47,33 @@ public class App
 			String text = "Hello world";
 	    	PDPage page = loadedDocument.getPage(index);
 	    	PDPageContentStream firstPageContentStream = PdfUtils.getPageContentStream(loadedDocument, page);
+	    	PDPageContentStream thirdPageContentStream = PdfUtils.getPageContentStream(loadedDocument, loadedDocument.getPage(2));
 	    	PdfUtils.writeText(firstPageContentStream, text, PDType1Font.TIMES_BOLD_ITALIC,tx, ty);
+	    	PdfUtils.writeText(thirdPageContentStream, "Hello World 2", PDType1Font.TIMES_BOLD_ITALIC,tx, ty);
 	    	PdfUtils.closePageContentStream(firstPageContentStream);
+	    	PdfUtils.closePageContentStream(thirdPageContentStream);
 	    	PdfUtils.savePDF(loadedDocument, loadPath);
-	    	PdfUtils.closeDocument(loadedDocument);
+	    	
+	    	Integer delimiter = 2;
+	    	Splitter splitter = new Splitter();
+	    	String folderPath = "";
+	    	try {
+				List<PDDocument> pages = splitter.split(loadedDocument);
+				Iterator<PDDocument> pagesIterator = pages.iterator();
+				PDDocument [] splittedDocuments = new PDDocument [] {new PDDocument(), new PDDocument()};
+ 				int counter = 0;
+				while(pagesIterator.hasNext() && counter < delimiter) {
+					splittedDocuments[0].addPage(pagesIterator.next().getPage(0));
+					counter++;
+				}
+				while(pagesIterator.hasNext())
+					splittedDocuments[1].addPage(pagesIterator.next().getPage(0));
+				for(int i = 0; i < splittedDocuments.length; i++)
+					PdfUtils.savePDF(splittedDocuments[i], folderPath + "splitted_" + (i+ 1) + ".pdf");
+			} catch (IOException e) {
+				log.error("Error in splitting document={}", loadedDocument.toString());
+			}
+	    	
 			/*
 			 * int modifyPageIndex = 3; PDPage modifiedPage =
 			 * loadedDocument.getPage(modifyPageIndex);
