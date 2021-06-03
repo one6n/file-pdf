@@ -24,7 +24,7 @@ public class PdfUtils {
 	    		document.save(absolutePath);
 	    		log.info("Saved document={} in path={}", document, absolutePath);
 	    	}catch(IOException e) {
-	    		log.error("Error in save pdf={}",document.toString());
+	    		log.error("Error in save pdf={}, path={}",document.toString(), absolutePath);
 	    	}
     	}
     }
