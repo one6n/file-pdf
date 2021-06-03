@@ -17,28 +17,6 @@ import org.slf4j.LoggerFactory;
 public class PdfUtils {
 	
 	private static final Logger log = LoggerFactory.getLogger(PdfUtils.class);
-	
-	public static PDDocument createAndSavePdfWithBlankPages(final int NUMBER_OF_PAGE, String absolutePath) {
-		PDDocument document = new PDDocument();
-		if(document != null) {
-	    	for(int i = 0; i < NUMBER_OF_PAGE; i++)
-	    		document.addPage(new PDPage());
-	    	savePDF(document, absolutePath);
-		}
-    	return document;
-	}	
-	
-	public static void closeDocument(PDDocument document) {
-		if(document != null) {
-			try {
-				document.close();
-				log.info("Closed document={}", document.toString());
-				}
-			catch (IOException e) {
-				log.error("Error in closing document={}", document.toString());
-			}
-		}
-	}
 
     public static void savePDF(PDDocument document, String absolutePath) {
     	if(document != null && absolutePath != null) {
@@ -77,24 +55,47 @@ public class PdfUtils {
     	return loadedPDF;
     }
     
+	public static void closeDocument(PDDocument document) {
+		if(document != null) {
+			try {
+				document.close();
+				log.info("Closed document={}", document.toString());
+				}
+			catch (IOException e) {
+				log.error("Error in closing document={}", document.toString());
+			}
+		}
+	}
+	
+	public static PDDocument createAndSavePdfWithBlankPages(final int NUMBER_OF_PAGE, String absolutePath) {
+		PDDocument document = new PDDocument();
+		if(document != null) {
+	    	for(int i = 0; i < NUMBER_OF_PAGE; i++)
+	    		document.addPage(new PDPage());
+	    	savePDF(document, absolutePath);
+		}
+    	return document;
+	}	
+    
 	public static List<PDDocument> splitDocument(PDDocument document, Integer delimiter) {
 		List<PDDocument> splittedDocuments = null;
 		if(document != null && delimiter <= document.getNumberOfPages()) {
 			Splitter splitter = new Splitter();
+			List<PDDocument> pages = null;
 			try {
-				List<PDDocument> pages = splitter.split(document);
-				Iterator<PDDocument> pagesIterator = pages.iterator();
-				splittedDocuments = Arrays.asList(new PDDocument [] {new PDDocument(), new PDDocument()});
-				int counter = 0;
-				while(pagesIterator.hasNext() && counter < delimiter) {
-					splittedDocuments.get(0).addPage(pagesIterator.next().getPage(0));
-					counter++;
-				}
-				while(pagesIterator.hasNext())
-					splittedDocuments.get(1).addPage(pagesIterator.next().getPage(0));
+				pages = splitter.split(document);
 			} catch (IOException e) {
 				log.error("Error in splitting document={}", document.toString());
 			}
+			Iterator<PDDocument> pagesIterator = pages.iterator();
+			splittedDocuments = Arrays.asList(new PDDocument [] {new PDDocument(), new PDDocument()});
+			int counter = 0;
+			while(pagesIterator.hasNext() && counter < delimiter) {
+				splittedDocuments.get(0).addPage(pagesIterator.next().getPage(0));
+				counter++;
+			}
+			while(pagesIterator.hasNext())
+				splittedDocuments.get(1).addPage(pagesIterator.next().getPage(0));
 		}
 		return splittedDocuments;
 	}

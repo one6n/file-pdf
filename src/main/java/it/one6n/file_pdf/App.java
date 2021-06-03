@@ -37,10 +37,10 @@ public class App
 			int ty = 450;
 			String text = "Hello world";
 	    	PdfUtils.writeText(loadedDocument, pageIndex, text, PDType1Font.TIMES_BOLD_ITALIC,tx, ty);
-	    	PdfUtils.writeText(loadedDocument, 2, "Hello World 2", PDType1Font.TIMES_BOLD_ITALIC,tx, ty);
+	    	PdfUtils.writeText(loadedDocument, 5, "Hello World 2", PDType1Font.TIMES_BOLD_ITALIC,tx, ty);
 	    	PdfUtils.savePDF(loadedDocument, loadPath);
 	    	
-	    	Integer delimiter = 2;
+	    	Integer delimiter = 5;
 	    	String folderPath = "";
 	    	
 	    	List<PDDocument> splittedDocuments = PdfUtils.splitDocument(loadedDocument, delimiter);
