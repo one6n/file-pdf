@@ -33,7 +33,6 @@ public class PdfUtils {
     	PDDocument loadedPDF = null;
     	if(absolutePath != null) {
 	    	File file = new File(absolutePath);
-	    	
 	    	try {
 	    		loadedPDF = PDDocument.load(file);
 	    		log.info("Loaded document={}", loadedPDF.toString());
@@ -101,17 +100,21 @@ public class PdfUtils {
 	}
     
 	public static void writeText(PDDocument document, int pageIndex, String text, PDType1Font font, int tx, int ty) {
-		PDPageContentStream pageContentStream = getPageContentStream(document, document.getPage(pageIndex));
-		if(pageContentStream != null && text != null) {
-			try {
-				pageContentStream.beginText();
-				pageContentStream.newLineAtOffset(tx, ty);
-				pageContentStream.setFont(font, 40);
-				pageContentStream.showText(text);
-				pageContentStream.endText();
-				closePageContentStream(pageContentStream);
-			} catch (IOException e) {
-				log.error("Error in writing in pdf");
+		if(document != null && pageIndex < document.getNumberOfPages()) {
+			PDPageContentStream pageContentStream = getPageContentStream(document, document.getPage(pageIndex));
+			if(pageContentStream != null && text != null) {
+				try {
+					pageContentStream.beginText();
+					pageContentStream.newLineAtOffset(tx, ty);
+					pageContentStream.setFont(font, 40);
+					pageContentStream.showText(text);
+					pageContentStream.endText();
+					
+				} catch (IOException e) {
+					log.error("Error in writing in pdf");
+				} finally {
+					closePageContentStream(pageContentStream);
+				}
 			}
 		}
 	}

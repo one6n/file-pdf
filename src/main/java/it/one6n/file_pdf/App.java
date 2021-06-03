@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-
 public class App 
 {	
 	//in resources the logger get automatically the configuration file.
@@ -37,18 +36,20 @@ public class App
 			int ty = 450;
 			String text = "Hello world";
 	    	PdfUtils.writeText(loadedDocument, pageIndex, text, PDType1Font.TIMES_BOLD_ITALIC,tx, ty);
-	    	PdfUtils.writeText(loadedDocument, 5, "Hello World 2", PDType1Font.TIMES_BOLD_ITALIC,tx, ty);
+	    	PdfUtils.writeText(loadedDocument, 4, "Hello World 2", PDType1Font.TIMES_BOLD_ITALIC,tx, ty);
 	    	PdfUtils.savePDF(loadedDocument, loadPath);
 	    	
-	    	Integer delimiter = 5;
+	    	Integer delimiter = 2;
 	    	String folderPath = "";
 	    	
 	    	List<PDDocument> splittedDocuments = PdfUtils.splitDocument(loadedDocument, delimiter);
-	    	Iterator<PDDocument> splittedIterator = splittedDocuments.iterator();
-	    	int i = 0;
-	    	while(splittedIterator.hasNext()) {
-	    		PdfUtils.savePDF(splittedIterator.next(), folderPath + "splitted_" + (i+ 1) + ".pdf");
-	    		++i;
+	    	if(splittedDocuments != null) {
+		    	Iterator<PDDocument> splittedIterator = splittedDocuments.iterator();
+		    	int i = 0;
+		    	while(splittedIterator.hasNext()) {
+		    		PdfUtils.savePDF(splittedIterator.next(), folderPath + "splitted_" + (i+ 1) + ".pdf");
+		    		++i;
+		    	}
 	    	}
 	    	PdfUtils.closeDocument(loadedDocument);
     	}
