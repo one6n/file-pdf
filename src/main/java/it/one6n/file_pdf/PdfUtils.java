@@ -22,7 +22,7 @@ public class PdfUtils {
 	//private static final Logger log = LoggerFactory.getLogger(PdfUtils.class);
 
     public static void savePDF(PDDocument document, String absolutePath) {
-    	if(document != null && absolutePath != null) {
+    	if(document != null && absolutePath != null && absolutePath.length() > 0 && absolutePath != "") {
 	    	try {
 	    		document.save(absolutePath);
 	    		log.info("Saved document={} in path={}", document, absolutePath);
@@ -69,7 +69,7 @@ public class PdfUtils {
 		}
 	}
 	
-	public static PDDocument createPdfWithBlankPages(final int NUMBER_OF_PAGE, String absolutePath) {
+	public static PDDocument createPdfWithBlankPages(final int NUMBER_OF_PAGE) {
 		PDDocument document = new PDDocument();
 		if(document != null) {
 	    	for(int i = 0; i < NUMBER_OF_PAGE; i++)
@@ -79,11 +79,14 @@ public class PdfUtils {
 	}
 	
 	public static PDDocument createAndSavePdfWithBlankPages(final int NUMBER_OF_PAGE, String absolutePath) {
-		PDDocument document = new PDDocument();
-		if(document != null) {
-	    	for(int i = 0; i < NUMBER_OF_PAGE; i++)
-	    		document.addPage(new PDPage());
-	    	savePDF(document, absolutePath);
+		PDDocument document = null;
+		if(absolutePath != null && absolutePath.length() > 0 && absolutePath != "") {
+			document = new PDDocument();
+			if(document != null) {
+		    	for(int i = 0; i < NUMBER_OF_PAGE; i++)
+		    		document.addPage(new PDPage());
+		    	savePDF(document, absolutePath);
+			}
 		}
     	return document;
 	}	

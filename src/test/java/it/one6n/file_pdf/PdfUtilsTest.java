@@ -69,9 +69,7 @@ public class PdfUtilsTest {
 	@Test
 	public void testSplitDocument() {
 		Integer numberOfPages = 5;
-		String fileName = "src" + File.separator + "test" +
-				File.separator + "resources" + File.separator + "file.pdf";
-		PDDocument document = PdfUtils.createAndSavePdfWithBlankPages(numberOfPages, fileName);
+		PDDocument document = PdfUtils.createPdfWithBlankPages(numberOfPages);
 		List<PDDocument> splittedDocuments = null;
 		assertNull(splittedDocuments);
 		Integer delimiter = 3;
@@ -98,10 +96,5 @@ public class PdfUtilsTest {
 		assertEquals(splittedDocuments.size(), 1);
 		assertEquals(splittedDocuments.get(0).getNumberOfPages(), 5);
 		PdfUtils.closeDocument(splittedDocuments.get(0));
-		
-		File file = new File(fileName);
-		if(file.exists())
-			file.delete();
-		
 	}
 }
