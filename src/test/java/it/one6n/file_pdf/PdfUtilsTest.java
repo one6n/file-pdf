@@ -65,6 +65,11 @@ public class PdfUtilsTest {
 		assertTrue(file.exists());
 		if(file.exists())
 			file.delete();
+		fileName = "";
+		file = new File(fileName);
+		PdfUtils.savePDF(document, fileName);
+		assertFalse(file.exists());
+		PdfUtils.closeDocument(document);
 	}
 	@Test
 	public void testSplitDocument() {

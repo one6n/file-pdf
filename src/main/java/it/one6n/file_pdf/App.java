@@ -6,8 +6,8 @@ import java.util.List;
 //import org.apache.log4j.PropertyConfigurator;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 
 public class App 
@@ -15,7 +15,7 @@ public class App
 	//in resources the logger get automatically the configuration file.
 	//private static final String LOGGER_PROPERTIES_FILE = System.getProperty("user.dir") + "/src/main/resources/log4j.properties";
 	
-	private static final Logger log = LoggerFactory.getLogger(App.class);
+	//private static final Logger log = LoggerFactory.getLogger(App.class);
 	
     public static void main( String[] args )
     {	
