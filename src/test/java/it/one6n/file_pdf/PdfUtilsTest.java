@@ -19,8 +19,14 @@ public class PdfUtilsTest {
 				File.separator + "resources" + File.separator + "file.pdf";
 		file = new File(path);
 		PDDocument document = new PDDocument();
+		String title = "title";
+		document.getDocumentInformation().setTitle(title);
 		PdfUtils.savePDF(document, path);
-		assertNotNull(PdfUtils.loadPDF(file));
+		PDDocument loadedDocument = PdfUtils.loadPDF(file);
+		assertNotNull(loadedDocument);
+		assertEquals(document.getDocumentInformation().getTitle(), loadedDocument.getDocumentInformation().getTitle());
+		PdfUtils.closeDocument(document);
+		PdfUtils.closeDocument(loadedDocument);
 	}
 	
 	@Test
@@ -30,7 +36,13 @@ public class PdfUtilsTest {
 		path = "src" + File.separator + "test" +
 		File.separator + "resources" + File.separator + "file.pdf";
 		PDDocument document = new PDDocument();
+		String title = "title";
+		document.getDocumentInformation().setTitle(title);
 		PdfUtils.savePDF(document, path);
-		assertNotNull(PdfUtils.loadPDF(path));
+		PDDocument loadedDocument = PdfUtils.loadPDF(path);
+		assertNotNull(loadedDocument);
+		assertEquals(document.getDocumentInformation().getTitle(), loadedDocument.getDocumentInformation().getTitle());
+		PdfUtils.closeDocument(document);
+		PdfUtils.closeDocument(loadedDocument);
 	}
 }
