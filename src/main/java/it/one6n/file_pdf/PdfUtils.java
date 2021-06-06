@@ -11,12 +11,14 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class PdfUtils {
 	
-	private static final Logger log = LoggerFactory.getLogger(PdfUtils.class);
+	//private static final Logger log = LoggerFactory.getLogger(PdfUtils.class);
 
     public static void savePDF(PDDocument document, String absolutePath) {
     	if(document != null && absolutePath != null) {
