@@ -39,7 +39,7 @@ public class App
 	    	PdfUtils.writeText(loadedDocument, 4, "Hello World 2", PDType1Font.TIMES_BOLD_ITALIC,tx, ty);
 	    	PdfUtils.savePDF(loadedDocument, loadPath);
 	    	
-	    	Integer delimiter = 2;
+	    	Integer delimiter = 5;
 	    	String folderPath = "";
 	    	
 	    	List<PDDocument> splittedDocuments = PdfUtils.splitDocument(loadedDocument, delimiter);

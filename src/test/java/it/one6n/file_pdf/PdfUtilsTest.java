@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.Test;
@@ -64,5 +65,43 @@ public class PdfUtilsTest {
 		assertTrue(file.exists());
 		if(file.exists())
 			file.delete();
+	}
+	@Test
+	public void testSplitDocument() {
+		Integer numberOfPages = 5;
+		String fileName = "src" + File.separator + "test" +
+				File.separator + "resources" + File.separator + "file.pdf";
+		PDDocument document = PdfUtils.createAndSavePdfWithBlankPages(numberOfPages, fileName);
+		List<PDDocument> splittedDocuments = null;
+		assertNull(splittedDocuments);
+		Integer delimiter = 3;
+		splittedDocuments = PdfUtils.splitDocument(document, delimiter);
+		assertNotNull(splittedDocuments);
+		assertEquals(splittedDocuments.size(), 2);
+		assertEquals(splittedDocuments.get(0).getNumberOfPages(), 3);
+		assertEquals(splittedDocuments.get(1).getNumberOfPages(), 2);
+		PdfUtils.closeDocument(splittedDocuments.get(0));
+		PdfUtils.closeDocument(splittedDocuments.get(1));
+		splittedDocuments = null;
+		assertNull(splittedDocuments);
+		delimiter = 6;
+		splittedDocuments = PdfUtils.splitDocument(document, delimiter);
+		assertNull(splittedDocuments);
+		delimiter = 0;
+		splittedDocuments = PdfUtils.splitDocument(document, delimiter);
+		assertEquals(splittedDocuments.size(), 1);
+		assertEquals(splittedDocuments.get(0).getNumberOfPages(), 5);
+		PdfUtils.closeDocument(splittedDocuments.get(0));
+		delimiter = 5;
+		splittedDocuments = null;
+		splittedDocuments = PdfUtils.splitDocument(document, delimiter);
+		assertEquals(splittedDocuments.size(), 1);
+		assertEquals(splittedDocuments.get(0).getNumberOfPages(), 5);
+		PdfUtils.closeDocument(splittedDocuments.get(0));
+		
+		File file = new File(fileName);
+		if(file.exists())
+			file.delete();
+		
 	}
 }

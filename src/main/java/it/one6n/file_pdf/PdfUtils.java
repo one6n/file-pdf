@@ -2,6 +2,7 @@ package it.one6n.file_pdf;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -68,6 +69,15 @@ public class PdfUtils {
 		}
 	}
 	
+	public static PDDocument createPdfWithBlankPages(final int NUMBER_OF_PAGE, String absolutePath) {
+		PDDocument document = new PDDocument();
+		if(document != null) {
+	    	for(int i = 0; i < NUMBER_OF_PAGE; i++)
+	    		document.addPage(new PDPage());
+		}
+    	return document;
+	}
+	
 	public static PDDocument createAndSavePdfWithBlankPages(final int NUMBER_OF_PAGE, String absolutePath) {
 		PDDocument document = new PDDocument();
 		if(document != null) {
@@ -81,6 +91,11 @@ public class PdfUtils {
 	public static List<PDDocument> splitDocument(PDDocument document, Integer delimiter) {
 		List<PDDocument> splittedDocuments = null;
 		if(document != null && delimiter <= document.getNumberOfPages()) {
+			if(delimiter == 0 || delimiter == document.getNumberOfPages()) {
+				splittedDocuments = new ArrayList<>();
+				splittedDocuments.add(document);
+				return splittedDocuments;
+			}
 			Splitter splitter = new Splitter();
 			List<PDDocument> pages = null;
 			try {
