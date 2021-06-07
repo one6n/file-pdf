@@ -102,4 +102,70 @@ public class PdfUtilsTest {
 		assertEquals(splittedDocuments.get(0).getNumberOfPages(), 5);
 		PdfUtils.closeDocument(splittedDocuments.get(0));
 	}
+	
+	@Test
+	public void testCreatePdfWithBlankPages() {
+		int numberOfPages = 5;
+		PDDocument document = null;
+		assertNull(document);
+		document = PdfUtils.createPdfWithBlankPages(numberOfPages);
+		assertNotNull(document);
+		assertEquals(numberOfPages, document.getNumberOfPages());
+		PdfUtils.closeDocument(document);
+		document = null;
+		numberOfPages = 0;
+		document = PdfUtils.createPdfWithBlankPages(numberOfPages);
+		assertNotNull(document);
+		assertEquals(numberOfPages, document.getNumberOfPages());
+		PdfUtils.closeDocument(document);
+		document = null;
+		numberOfPages = -1;
+		document = PdfUtils.createPdfWithBlankPages(numberOfPages);
+		assertNotNull(document);
+		assertEquals(0, document.getNumberOfPages());
+		PdfUtils.closeDocument(document);
+		
+	}
+	
+	@Test
+	public void testcreateAndSavePdfWithBlankPages() {
+		int numberOfPages = 5;
+		String fileName = "src" + File.separator + "test" +
+				File.separator + "resources" + File.separator + "file.pdf";
+		File file = new File(fileName);
+		PDDocument document = null;
+		assertNull(document);
+		document = PdfUtils.createAndSavePdfWithBlankPages(numberOfPages, fileName);
+		assertNotNull(document);
+		assertEquals(numberOfPages, document.getNumberOfPages());
+		assertTrue(file.exists());
+		PdfUtils.closeDocument(document);
+		if(file.exists())
+			file.delete();
+		document = null;
+		numberOfPages = 0;
+		document = PdfUtils.createAndSavePdfWithBlankPages(numberOfPages, fileName);
+		assertNotNull(document);
+		assertEquals(numberOfPages, document.getNumberOfPages());
+		assertTrue(file.exists());
+		PdfUtils.closeDocument(document);
+		if(file.exists())
+			file.delete();
+		document = null;
+		numberOfPages = -1;
+		document = PdfUtils.createAndSavePdfWithBlankPages(numberOfPages, fileName);
+		assertNotNull(document);
+		assertEquals(0, document.getNumberOfPages());
+		PdfUtils.closeDocument(document);
+		assertTrue(file.exists());
+		PdfUtils.closeDocument(document);
+		if(file.exists())
+			file.delete();
+		
+	}
+	
+	@Test
+	public void testWriteText() {
+		
+	}
 }
