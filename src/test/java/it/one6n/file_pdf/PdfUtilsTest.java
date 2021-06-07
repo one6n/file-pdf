@@ -7,9 +7,12 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.junit.Test;
 
 public class PdfUtilsTest {
@@ -166,6 +169,28 @@ public class PdfUtilsTest {
 	
 	@Test
 	public void testWriteText() {
-		
+		PDDocument document = PdfUtils.createPdfWithBlankPages(1);
+		PDFTextStripper pdfStripper = null;
+		String readedText = null;
+		try {
+			pdfStripper = new PDFTextStripper();
+			readedText = pdfStripper.getText(document);
+		} catch (IOException e) {}
+		finally {
+			PdfUtils.closeDocument(document);
+		}
+		System.out.println(readedText);
+		assertTrue(readedText.isBlank());
+		String text = "Hello World";
+		document = PdfUtils.createPdfWithBlankPages(1);
+		PdfUtils.writeText(document, 0, text, PDType1Font.TIMES_ITALIC, 200, 200);
+		try {
+			readedText = pdfStripper.getText(document);
+		}catch(IOException e) {}
+		finally {
+			PdfUtils.closeDocument(document);
+		}
+		assertNotNull(readedText);
+		assertEquals(text + "\n", readedText);
 	}
 }
