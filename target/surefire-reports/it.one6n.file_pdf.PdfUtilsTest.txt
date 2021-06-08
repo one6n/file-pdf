@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: it.one6n.file_pdf.PdfUtilsTest
+-------------------------------------------------------------------------------
+Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.446 s - in it.one6n.file_pdf.PdfUtilsTest
