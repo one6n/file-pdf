@@ -15,6 +15,8 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.junit.Test;
 
+import it.one6n.pdfutils.PdfUtils;
+
 public class PdfUtilsTest {
 
 	@Test

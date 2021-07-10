@@ -1,4 +1,4 @@
-package it.one6n.file_pdf;
+package it.one6n.pdfutils;
 
 import java.io.File;
 import java.io.IOException;
