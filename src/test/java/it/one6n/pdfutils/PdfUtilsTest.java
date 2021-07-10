@@ -1,4 +1,4 @@
-package it.one6n.file_pdf;
+package it.one6n.pdfutils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -15,16 +15,13 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.junit.Test;
 
-import it.one6n.pdfutils.PdfUtils;
-
 public class PdfUtilsTest {
 
 	@Test
 	public void testLoadDocumentFile() {
 		File file = null;
 		assertNull(PdfUtils.loadPDF(file));
-		String path = "src" + File.separator + "test" +
-				File.separator + "resources" + File.separator + "file.pdf";
+		String path = "src" + File.separator + "test" + File.separator + "resources" + File.separator + "file.pdf";
 		file = new File(path);
 		PDDocument document = new PDDocument();
 		String title = "title";
@@ -35,16 +32,15 @@ public class PdfUtilsTest {
 		assertEquals(document.getDocumentInformation().getTitle(), loadedDocument.getDocumentInformation().getTitle());
 		PdfUtils.closeDocument(document);
 		PdfUtils.closeDocument(loadedDocument);
-		if(file.exists())
+		if (file.exists())
 			file.delete();
 	}
-	
+
 	@Test
 	public void testLoadDocumentPath() {
 		String path = null;
 		assertNull(PdfUtils.loadPDF(path));
-		path = "src" + File.separator + "test" +
-				File.separator + "resources" + File.separator + "file.pdf";
+		path = "src" + File.separator + "test" + File.separator + "resources" + File.separator + "file.pdf";
 		PDDocument document = new PDDocument();
 		String title = "title";
 		document.getDocumentInformation().setTitle(title);
@@ -55,20 +51,19 @@ public class PdfUtilsTest {
 		PdfUtils.closeDocument(document);
 		PdfUtils.closeDocument(loadedDocument);
 		File file = new File(path);
-		if(file.exists())
+		if (file.exists())
 			file.delete();
 	}
-	
+
 	@Test
 	public void testSavePDF() {
-		String fileName = "src" + File.separator + "test" +
-				File.separator + "resources" + File.separator + "file.pdf";
-		File file =  new File(fileName);
+		String fileName = "src" + File.separator + "test" + File.separator + "resources" + File.separator + "file.pdf";
+		File file = new File(fileName);
 		assertFalse(file.exists());
 		PDDocument document = new PDDocument();
 		PdfUtils.savePDF(document, fileName);
 		assertTrue(file.exists());
-		if(file.exists())
+		if (file.exists())
 			file.delete();
 		fileName = "";
 		file = new File(fileName);
@@ -76,6 +71,7 @@ public class PdfUtilsTest {
 		assertFalse(file.exists());
 		PdfUtils.closeDocument(document);
 	}
+
 	@Test
 	public void testSplitDocument() {
 		Integer numberOfPages = 5;
@@ -107,7 +103,7 @@ public class PdfUtilsTest {
 		assertEquals(splittedDocuments.get(0).getNumberOfPages(), 5);
 		PdfUtils.closeDocument(splittedDocuments.get(0));
 	}
-	
+
 	@Test
 	public void testCreatePdfWithBlankPages() {
 		int numberOfPages = 5;
@@ -129,14 +125,13 @@ public class PdfUtilsTest {
 		assertNotNull(document);
 		assertEquals(0, document.getNumberOfPages());
 		PdfUtils.closeDocument(document);
-		
+
 	}
-	
+
 	@Test
 	public void testcreateAndSavePdfWithBlankPages() {
 		int numberOfPages = 5;
-		String fileName = "src" + File.separator + "test" +
-				File.separator + "resources" + File.separator + "file.pdf";
+		String fileName = "src" + File.separator + "test" + File.separator + "resources" + File.separator + "file.pdf";
 		File file = new File(fileName);
 		PDDocument document = null;
 		assertNull(document);
@@ -145,7 +140,7 @@ public class PdfUtilsTest {
 		assertEquals(numberOfPages, document.getNumberOfPages());
 		assertTrue(file.exists());
 		PdfUtils.closeDocument(document);
-		if(file.exists())
+		if (file.exists())
 			file.delete();
 		document = null;
 		numberOfPages = 0;
@@ -154,7 +149,7 @@ public class PdfUtilsTest {
 		assertEquals(numberOfPages, document.getNumberOfPages());
 		assertTrue(file.exists());
 		PdfUtils.closeDocument(document);
-		if(file.exists())
+		if (file.exists())
 			file.delete();
 		document = null;
 		numberOfPages = -1;
@@ -164,11 +159,11 @@ public class PdfUtilsTest {
 		PdfUtils.closeDocument(document);
 		assertTrue(file.exists());
 		PdfUtils.closeDocument(document);
-		if(file.exists())
+		if (file.exists())
 			file.delete();
-		
+
 	}
-	
+
 	@Test
 	public void testWriteText() {
 		PDDocument document = PdfUtils.createPdfWithBlankPages(1);
@@ -177,8 +172,8 @@ public class PdfUtilsTest {
 		try {
 			pdfStripper = new PDFTextStripper();
 			readedText = pdfStripper.getText(document);
-		} catch (IOException e) {}
-		finally {
+		} catch (IOException e) {
+		} finally {
 			PdfUtils.closeDocument(document);
 		}
 		System.out.println(readedText);
@@ -188,11 +183,11 @@ public class PdfUtilsTest {
 		PdfUtils.writeText(document, 0, text, PDType1Font.TIMES_ITALIC, 200, 200);
 		try {
 			readedText = pdfStripper.getText(document);
-		}catch(IOException e) {}
-		finally {
+		} catch (IOException e) {
+		} finally {
 			PdfUtils.closeDocument(document);
 		}
 		assertNotNull(readedText);
-		assertEquals(text + "\n", readedText);
+		assertEquals(text, readedText.substring(0, readedText.length() - 2));
 	}
 }
