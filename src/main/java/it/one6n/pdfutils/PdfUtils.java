@@ -117,13 +117,6 @@ public class PdfUtils {
 					splittedDocuments.get(1).addPage(pagesIterator.next().getPage(0));
 			} catch (IOException e) {
 				log.error("Error in splitting document={}", document.toString());
-			} finally {
-				for (PDDocument page : pages)
-					try {
-						page.close();
-					} catch (IOException e) {
-						throw new RuntimeException(e);
-					}
 			}
 		}
 		return splittedDocuments;
