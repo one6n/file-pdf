@@ -3,11 +3,9 @@ package it.one6n.pdfutils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.pdfbox.multipdf.Splitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -93,33 +91,38 @@ public class PdfUtils {
 		return document;
 	}
 
-	public static List<PDDocument> splitDocument(PDDocument document, Integer delimiter) {
-		List<PDDocument> splittedDocuments = null;
-		if (document != null && delimiter <= document.getNumberOfPages()) {
-			if (delimiter == 0 || delimiter == document.getNumberOfPages()) {
-				splittedDocuments = new ArrayList<>();
-				splittedDocuments.add(document);
-				return splittedDocuments;
-			}
-			Splitter splitter = new Splitter();
-			List<PDDocument> pages = null;
-			try {
-				pages = splitter.split(document);
-
-				Iterator<PDDocument> pagesIterator = pages.iterator();
-				splittedDocuments = Arrays.asList(new PDDocument[] { new PDDocument(), new PDDocument() });
-				int counter = 0;
-				while (pagesIterator.hasNext() && counter < delimiter) {
-					splittedDocuments.get(0).addPage(pagesIterator.next().getPage(0));
-					counter++;
-				}
-				while (pagesIterator.hasNext())
-					splittedDocuments.get(1).addPage(pagesIterator.next().getPage(0));
-			} catch (IOException e) {
-				log.error("Error in splitting document={}", document.toString());
-			}
+	public static int getNumberOfPages(byte[] barr) throws IOException {
+		int numberOfPages = 0;
+		try (PDDocument doc = PDDocument.load(barr)) {
+			numberOfPages = getNumberOfPages(doc);
 		}
-		return splittedDocuments;
+		return numberOfPages;
+	}
+
+	public static int getNumberOfPages(PDDocument document) throws IOException {
+		return document.getNumberOfPages();
+	}
+
+	public static List<PDDocument> splitDocument(PDDocument document, int index) throws IOException {
+		List<PDDocument> splitted = null;
+		if (document != null && index > 0 && getNumberOfPages(document) > index) {
+			Iterator<PDPage> iterator = document.getPages().iterator();
+			int i = 0;
+			splitted = new ArrayList<>();
+			PDDocument doc1 = new PDDocument();
+			while (i < index && iterator.hasNext()) {
+				doc1.addPage(iterator.next());
+				++i;
+			}
+			splitted.add(doc1);
+			PDDocument doc2 = new PDDocument();
+			while (iterator.hasNext()) {
+				doc2.addPage(iterator.next());
+				++i;
+			}
+			splitted.add(doc2);
+		}
+		return splitted;
 	}
 
 	public static void writeText(PDDocument document, int pageIndex, String text, PDType1Font font, int tx, int ty) {

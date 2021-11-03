@@ -1,10 +1,10 @@
 package it.one6n.pdfutils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,8 +13,11 @@ import java.util.List;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.text.PDFTextStripper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class PdfUtilsTest {
 
 	@Test
@@ -74,34 +77,34 @@ public class PdfUtilsTest {
 
 	@Test
 	public void testSplitDocument() {
-		Integer numberOfPages = 5;
+		int numberOfPages = 5;
 		PDDocument document = PdfUtils.createPdfWithBlankPages(numberOfPages);
 		List<PDDocument> splittedDocuments = null;
 		assertNull(splittedDocuments);
-		Integer delimiter = 3;
-		splittedDocuments = PdfUtils.splitDocument(document, delimiter);
-		assertNotNull(splittedDocuments);
-		assertEquals(splittedDocuments.size(), 2);
-		assertEquals(splittedDocuments.get(0).getNumberOfPages(), 3);
-		assertEquals(splittedDocuments.get(1).getNumberOfPages(), 2);
-		PdfUtils.closeDocument(splittedDocuments.get(0));
-		PdfUtils.closeDocument(splittedDocuments.get(1));
-		splittedDocuments = null;
-		assertNull(splittedDocuments);
-		delimiter = 6;
-		splittedDocuments = PdfUtils.splitDocument(document, delimiter);
-		assertNull(splittedDocuments);
-		delimiter = 0;
-		splittedDocuments = PdfUtils.splitDocument(document, delimiter);
-		assertEquals(splittedDocuments.size(), 1);
-		assertEquals(splittedDocuments.get(0).getNumberOfPages(), 5);
-		PdfUtils.closeDocument(splittedDocuments.get(0));
-		delimiter = 5;
-		splittedDocuments = null;
-		splittedDocuments = PdfUtils.splitDocument(document, delimiter);
-		assertEquals(splittedDocuments.size(), 1);
-		assertEquals(splittedDocuments.get(0).getNumberOfPages(), 5);
-		PdfUtils.closeDocument(splittedDocuments.get(0));
+		int delimiter = 3;
+		try {
+			splittedDocuments = PdfUtils.splitDocument(document, delimiter);
+			assertNotNull(splittedDocuments);
+			assertEquals(splittedDocuments.size(), 2);
+			assertEquals(splittedDocuments.get(0).getNumberOfPages(), 3);
+			assertEquals(splittedDocuments.get(1).getNumberOfPages(), 2);
+			PdfUtils.closeDocument(splittedDocuments.get(0));
+			PdfUtils.closeDocument(splittedDocuments.get(1));
+			splittedDocuments = null;
+			assertNull(splittedDocuments);
+			delimiter = 6;
+			splittedDocuments = PdfUtils.splitDocument(document, delimiter);
+			assertNull(splittedDocuments);
+			delimiter = 0;
+			splittedDocuments = PdfUtils.splitDocument(document, delimiter);
+			assertNull(splittedDocuments);
+			delimiter = 5;
+			splittedDocuments = null;
+			splittedDocuments = PdfUtils.splitDocument(document, delimiter);
+			assertNull(splittedDocuments);
+		} catch (IOException e) {
+			log.error(e.getMessage(), e);
+		}
 	}
 
 	@Test
