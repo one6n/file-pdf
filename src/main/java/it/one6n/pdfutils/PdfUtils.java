@@ -58,6 +58,18 @@ public class PdfUtils {
 		return loadedPDF;
 	}
 
+	public static PDDocument loadPDF(byte[] barr) {
+		PDDocument document = null;
+		if (barr != null && barr.length > 0) {
+			try {
+				document = PDDocument.load(barr);
+			} catch (IOException e) {
+				log.error("Error during the load the document from byte");
+			}
+		}
+		return document;
+	}
+
 	public static void closeDocument(PDDocument document) {
 		if (document != null) {
 			try {
@@ -123,6 +135,16 @@ public class PdfUtils {
 			splitted.add(doc2);
 		}
 		return splitted;
+	}
+
+	public static PDDocument mergeDocuments(PDDocument... documents) {
+		PDDocument merged = new PDDocument();
+		for (PDDocument doc : documents) {
+			Iterator<PDPage> iterator = doc.getPages().iterator();
+			while (iterator.hasNext())
+				merged.addPage(iterator.next());
+		}
+		return merged;
 	}
 
 	public static void writeText(PDDocument document, int pageIndex, String text, PDType1Font font, int tx, int ty) {

@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -20,11 +21,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PdfUtilsTest {
 
+	private static final String BASE_TEST_RESOURCE_PATH = "src" + File.separator + "test" + File.separator + "resources"
+			+ File.separator + "testFile";
+
 	@Test
 	public void testLoadDocumentFile() {
 		File file = null;
 		assertNull(PdfUtils.loadPDF(file));
-		String path = "src" + File.separator + "test" + File.separator + "resources" + File.separator + "file.pdf";
+		String path = BASE_TEST_RESOURCE_PATH + File.separator + "file.pdf";
 		file = new File(path);
 		PDDocument document = new PDDocument();
 		String title = "title";
@@ -40,10 +44,30 @@ public class PdfUtilsTest {
 	}
 
 	@Test
+	public void testLoadDocumentByteArray() {
+		byte[] barr = null;
+		assertNull(PdfUtils.loadPDF(barr));
+		String testFileFullname = BASE_TEST_RESOURCE_PATH + File.separator + "test.pdf";
+		PdfUtils.createAndSavePdfWithBlankPages(2, testFileFullname);
+		File testFile = new File(testFileFullname);
+		try {
+			barr = Files.readAllBytes(testFile.toPath());
+			PDDocument doc = PdfUtils.loadPDF(barr);
+			assertNotNull(doc);
+			assertEquals(2, doc.getNumberOfPages());
+			PdfUtils.closeDocument(doc);
+			if (testFile.exists())
+				testFile.delete();
+		} catch (IOException e) {
+			log.error(e.getMessage(), e);
+		}
+	}
+
+	@Test
 	public void testLoadDocumentPath() {
 		String path = null;
 		assertNull(PdfUtils.loadPDF(path));
-		path = "src" + File.separator + "test" + File.separator + "resources" + File.separator + "file.pdf";
+		path = BASE_TEST_RESOURCE_PATH + File.separator + "file.pdf";
 		PDDocument document = new PDDocument();
 		String title = "title";
 		document.getDocumentInformation().setTitle(title);
@@ -60,7 +84,7 @@ public class PdfUtilsTest {
 
 	@Test
 	public void testSavePDF() {
-		String fileName = "src" + File.separator + "test" + File.separator + "resources" + File.separator + "file.pdf";
+		String fileName = BASE_TEST_RESOURCE_PATH + File.separator + "file.pdf";
 		File file = new File(fileName);
 		assertFalse(file.exists());
 		PDDocument document = new PDDocument();
@@ -108,6 +132,25 @@ public class PdfUtilsTest {
 	}
 
 	@Test
+	public void testMergeDocuments() throws IOException {
+		PDDocument merged = null;
+		try (PDDocument doc1 = PdfUtils.createPdfWithBlankPages(2);
+				PDDocument doc2 = PdfUtils.createPdfWithBlankPages(1)) {
+			merged = PdfUtils.mergeDocuments(doc1);
+			assertNotNull(merged);
+			assertEquals(2, merged.getNumberOfPages());
+			merged.close();
+			merged = PdfUtils.mergeDocuments(doc1, doc2);
+			assertNotNull(merged);
+			assertEquals(3, merged.getNumberOfPages());
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		} finally {
+			merged.close();
+		}
+	}
+
+	@Test
 	public void testCreatePdfWithBlankPages() {
 		int numberOfPages = 5;
 		PDDocument document = null;
@@ -134,7 +177,7 @@ public class PdfUtilsTest {
 	@Test
 	public void testcreateAndSavePdfWithBlankPages() {
 		int numberOfPages = 5;
-		String fileName = "src" + File.separator + "test" + File.separator + "resources" + File.separator + "file.pdf";
+		String fileName = BASE_TEST_RESOURCE_PATH + File.separator + "file.pdf";
 		File file = new File(fileName);
 		PDDocument document = null;
 		assertNull(document);
